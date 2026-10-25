@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartStudy AI — By Tanvi Gupta</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    <!-- PDF.js for Online Syllabus Upload Phase -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+    <div class="app-shell">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="brand-box">
+                <div class="logo-orb">🧠</div>
+                <div>
+                    <h2>SmartStudy AI <span class="badge-pro" style="background:#10b981;">PRO</span></h2>
+                    <p style="font-weight:700; color:#e2e8f0;">By Tanvi Gupta</p>
+                </div>
+            </div>
+
+            <!-- Gamification & Energy Level -->
+            <div class="xp-card">
+                <div class="xp-header">
+                    <span id="userLevelBadge" class="level-pill">LVL 5 Master</span>
+                    <span id="userXpText" class="xp-pts">450 XP</span>
+                </div>
+                <div class="xp-bar-bg">
+                    <div id="userXpFill" class="xp-bar-fill" style="width: 50%;"></div>
+                </div>
+                <div class="energy-selector">
+                    <span>⚡ Current Energy:</span>
+                    <select id="userEnergySelect" onchange="UI.onEnergyChange(this.value)">
+                        <option value="high">🔥 High (Deep Work)</option>
+                        <option value="medium" selected>⚡ Medium (Normal)</option>
+                        <option value="low">🔋 Low (Light Review)</option>
+                    </select>
+                </div>
+            </div>
+
+            <nav class="side-nav">
+                <button class="nav-item active" data-target="view-dashboard">
+                    <span>📊</span><span>Command Center</span>
+                </button>
+                <button class="nav-item" data-target="view-syllabus">
+                    <span>🌐</span><span>1. Upload Syllabus</span>
+                    <span class="nav-tag online-tag">Online</span>
+                </button>
+                <button class="nav-item" data-target="view-scheduler">
+                    <span>📅</span><span>Smart AI Timetable</span>
+                    <span class="nav-tag">Offline</span>
+                </button>
+                <button class="nav-item" data-target="view-flashcards">
+                    <span>🃏</span><span>SM-2 Flashcards</span>
+                    <span class="nav-tag">Offline</span>
+                </button>
+                <button class="nav-item" data-target="view-notes">
+                    <span>📝</span><span>Offline Notes & Quiz</span>
+                    <span class="nav-tag">Offline</span>
+                </button>
+                <button class="nav-item" data-target="view-habits">
+                    <span>🔄</span><span>Habit Loop Engine</span>
+                    <span class="nav-tag">Offline</span>
+                </button>
+                <button class="nav-item" data-target="view-pomodoro">
+                    <span>⏱️</span><span>Deep Focus Studio</span>
+                    <span class="nav-tag">Offline</span>
+                </button>
+                <button class="nav-item" data-target="view-tutor">
+                    <span>🤖</span><span>Offline AI Study Bot</span>
+                    <span class="nav-tag">Offline</span>
+                </button>
+                <button class="nav-item" data-target="view-analytics">
+                    <span>📈</span><span>Neural Analytics</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div id="netIndicator" class="net-status">
+                    <span id="netDot" class="pulse-dot"></span>
+                    <span id="netText">Checking Network...</span>
+                </div>
+                <div class="footer-btns">
+                    <button id="simOfflineBtn" class="icon-btn" onclick="UI.toggleOfflineSimulation()" title="Test Offline Mode for Viva">✈️ Sim Offline</button>
+                    <button id="themeBtn" class="icon-btn" title="Switch Theme">☀️ Light</button>
+                    <button id="exportBtn" class="icon-btn" title="Backup Data">💾</button>
+                    <button id="resetBtn" class="icon-btn danger" title="Reset Demo">↺</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN WORKSPACE -->
+        <main class="main-content">
+            <header class="top-header">
+                <div>
+                    <h1 id="pageTitle">Command Center</h1>
+                    <p id="pageSubtitle" class="text-muted">Online Syllabus Ingestion ➔ 100% Offline AI Execution</p>
+                </div>
+                <div class="header-right">
+                    <div class="quick-stat-pill">
+                        <span>🃏 Due Cards:</span>
+                        <strong id="headerCardsDue">4</strong>
+                    </div>
+                    <div class="quick-stat-pill">
+                        <span>🔥 Streak:</span>
+                        <strong id="headerStreak">7 Days</strong>
+                    </div>
+                    <div class="quick-stat-pill">
+                        <span>⏳ Focus:</span>
+                        <strong id="headerFocus">4.5 hrs</strong>
+                    </div>
+                </div>
+            </header>
+
+            <!-- VIEW 1: COMMAND CENTER -->
+            <section id="view-dashboard" class="view-section active">
+                <!-- Hybrid Workflow Indicator Banner -->
+                <div class="workflow-pipeline">
+                    <div class="pipe-step" onclick="UI.switchView('view-syllabus')">
+                        <span class="pipe-badge online">STEP 1: ONLINE</span>
+                        <h4>📤 Upload Syllabus PDF</h4>
+                        <p>AI parses Units, Topics, & generates Flashcards</p>
+                    </div>
+                    <div class="pipe-arrow">➔</div>
+                    <div class="pipe-step" onclick="UI.switchView('view-scheduler')">
+                        <span class="pipe-badge offline">STEP 2: 100% OFFLINE</span>
+                        <h4>📅 Energy-Aware Schedule</h4>
+                        <p>Dynamic Priority + Spaced Repetition</p>
+                    </div>
+                    <div class="pipe-arrow">➔</div>
+                    <div class="pipe-step" onclick="UI.switchView('view-pomodoro')">
+                        <span class="pipe-badge offline">STEP 3: 100% OFFLINE</span>
+                        <h4>⏱️ Deep Focus & Habit Loop</h4>
+                        <p>Pomodoro + Brown Noise + Streak XP</p>
+                    </div>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card kpi-blue">
+                        <div class="kpi-top"><span>Pending Modules</span><span>📚</span></div>
+                        <h3 id="kpiPending">0</h3>
+                        <p id="kpiCompletedSub">0 Completed</p>
+                    </div>
+                    <div class="kpi-card kpi-emerald">
+                        <div class="kpi-top"><span>Flashcards Mastered</span><span>🃏</span></div>
+                        <h3 id="kpiFlashcards">0</h3>
+                        <p>SM-2 Spaced Repetition</p>
+                    </div>
+                    <div class="kpi-card kpi-amber">
+                        <div class="kpi-top"><span>Max Habit Streak</span><span>🔥</span></div>
+                        <h3 id="kpiStreak">7 Days</h3>
+                        <p>Cue ➔ Routine ➔ Reward</p>
+                    </div>
+                    <div class="kpi-card kpi-purple">
+                        <div class="kpi-top"><span>Predicted Exam Score</span><span>🎯</span></div>
+                        <h3 id="kpiReadiness">86%</h3>
+                        <p>AI Readiness Estimator</p>
+                    </div>
+                </div>
+
+                <!-- Explainable AI Banner -->
+                <div class="xai-banner">
+                    <div class="xai-badge">✨ EXPLAINABLE AI (XAI) ENGINE</div>
+                    <div class="xai-content">
+                        <h3 id="xaiHeadline">Analyzing your energy state and syllabus deadlines...</h3>
+                        <p id="xaiReasoning">Priority = 0.45(Urgency) + 0.35(Difficulty × EnergyMatch) + 0.20(ExamWeight)</p>
+                    </div>
+                    <button class="btn btn-glow" onclick="UI.switchView('view-pomodoro')">▶ Launch Focus Studio</button>
+                </div>
+
+                <div class="grid-2-col">
+                    <div class="glass-card">
+                        <div class="card-head">
+                            <h3>🚀 Top AI Priority Queue (Energy Matched)</h3>
+                            <button class="btn-link" onclick="UI.switchView('view-scheduler')">Full Timetable →</button>
+                        </div>
+                        <div id="dashPriorityList" class="priority-stack"></div>
+                    </div>
+
+                    <div class="glass-card">
+                        <div class="card-head">
+                            <h3>🔄 Today's Habit Loops</h3>
+                            <button class="btn-link" onclick="UI.switchView('view-habits')">Manage Loops →</button>
+                        </div>
+                        <div id="dashHabitList" class="priority-stack"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 2: ONLINE SYLLABUS UPLOAD & AI ANALYZER -->
+            <section id="view-syllabus" class="view-section">
+                <div class="glass-card highlight-border">
+                    <span class="pill-tag">🌐 PHASE 1: ONLINE SYLLABUS INGESTION (ONE-TIME INTERNET USE)</span>
+                    <h3>Instant B.Tech CSE Syllabus Presets (Or Upload Custom PDF)</h3>
+                    <p class="text-muted">Jaise hi aap syllabus analyze karke save karenge, AI automatically <strong>Study Timetable + Spaced Repetition Flashcards</strong> bana dega. Uske baad pura project 100% offline chalega!</p>
+                    <div class="preset-buttons">
+                        <button class="preset-btn" onclick="SyllabusAI.loadPreset('coa')">🖥️ Computer Org & Arch (COA)</button>
+                        <button class="preset-btn" onclick="SyllabusAI.loadPreset('dsa')">🌳 Data Structures & Algo (DSA)</button>
+                        <button class="preset-btn" onclick="SyllabusAI.loadPreset('os')">⚙️ Operating Systems (OS)</button>
+                        <button class="preset-btn" onclick="SyllabusAI.loadPreset('aiml')">🤖 Artificial Intelligence & ML</button>
+                    </div>
+                </div>
+
+                <div class="grid-2-col">
+                    <div class="glass-card">
+                        <h3>📤 Multi-File Upload & Exam Goal Analyzer</h3>
+                        <form id="syllabusUploadForm">
+                            <!-- EXAM PREPARATION GOAL SELECTOR -->
+                            <div class="form-group" style="background:rgba(245, 158, 11, 0.12); border:1px solid rgba(245, 158, 11, 0.4); padding:0.85rem; border-radius:10px;">
+                                <label style="color:#fbbf24; font-size:0.86rem;">🎯 Aap kis cheej ki taiyari kar rahe hain? (Target Exam Goal)</label>
+                                <select id="examGoalSelect" onchange="SyllabusAI.onGoalChange()" required style="margin-top:4px; font-weight:600;">
+                                    <option value="university_endsem" selected>🎓 University End-Sem Exam (AKTU / B.Tech High-Weightage PYQs First)</option>
+                                    <option value="sessional_cram">⚡ Sessional / Mid-Sem (2-Day Last Minute Fast-Track Definitions & Derivations)</option>
+                                    <option value="gate_psu">🏆 GATE / PSU Competitive Exam (Deep Numericals, Proofs & Core Concepts First)</option>
+                                    <option value="placement_dsa">💼 Tech Placement / Coding Interview (DSA Implementation, Time Complexity & Coding First)</option>
+                                    <option value="custom_goal">✨ Custom Exam / Goal (Enter below)</option>
+                                </select>
+                                <input type="text" id="customGoalInput" placeholder="Apna custom exam likhein (e.g., ISRO CSE, Sem-3 Back Paper, LeetCode Contest)..." style="display:none; margin-top:8px;">
+                                <small id="goalStrategyHint" class="text-muted" style="display:block; margin-top:6px; font-size:0.74rem; color:#cbd5e1;">
+                                    🌐 <strong>Internet AI Strategy:</strong> Prioritizing 10-Mark long derivations, repeated University PYQ topics, and high-scoring units at the top!
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Subject / Course Name</label>
+                                <input type="text" id="sylSubject" placeholder="e.g., Data Structures (BCS301) - All Units" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Target Exam Date</label>
+                                    <input type="date" id="sylExamDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Daily Study Hours</label>
+                                    <input type="number" id="sylDailyHrs" value="3" min="1" max="12" required>
+                                </div>
+                            </div>
+
+                            <!-- MULTIPLE FILE UPLOAD ZONE -->
+                            <div class="form-group">
+                                <label>📚 Upload Multiple Syllabus / Notes Files (Select 1, 2, or 5+ PDFs/TXT together)</label>
+                                <div class="file-drop-zone" style="border-color:#6366f1; background:rgba(99,102,241,0.06);">
+                                    <input type="file" id="sylFileInput" accept=".pdf,.txt" multiple>
+                                    <p id="fileDropStatus">📂 Click to select <strong>Multiple PDF / TXT files</strong> (Ctrl+Click ya Drag & Drop)</p>
+                                </div>
+                                <div id="uploadedFilesChips" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;"></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Extracted Syllabus Units & Topics</label>
+                                <textarea id="sylRawText" rows="6" placeholder="Paste syllabus units here or click a preset button above..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary full-width">
+                                🧠 Analyze Syllabus & Auto-Generate Offline Pack
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="glass-card">
+                        <div class="card-head">
+                            <div>
+                                <h3>📋 Generated Offline Study Pack</h3>
+                                <p class="text-muted" id="sylPackSummary">Includes AI Timetable + Auto Flashcards</p>
+                            </div>
+                            <button id="btnSaveOffline" class="btn btn-emerald" style="display:none;" onclick="SyllabusAI.commitToOfflineDB()">
+                                💾 Save Pack & Go Offline
+                            </button>
+                        </div>
+
+                        <div id="sylEmptyState" class="empty-state-box">
+                            <div class="empty-orb">📄</div>
+                            <h4>No Syllabus Analyzed Yet</h4>
+                            <p>Select a B.Tech preset above or upload a PDF to generate your offline study modules and flashcards.</p>
+                        </div>
+
+                        <div id="sylPreviewContainer" class="table-wrap" style="display:none;">
+                            <table class="modern-table">
+                                <thead>
+                                    <tr>
+                                        <th>Module / Topic</th>
+                                        <th>Hrs</th>
+                                        <th>Load</th>
+                                        <th>Deadline</th>
+                                        <th>AI Priority</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sylPreviewBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 3: SMART AI TIMETABLE (OFFLINE) -->
+            <section id="view-scheduler" class="view-section">
+                <div class="grid-1-2">
+                    <div class="glass-card">
+                        <h3>➕ Add Custom Study Task</h3>
+                        <form id="addTaskForm">
+                            <div class="form-group">
+                                <label>Topic / Task Title</label>
+                                <input type="text" id="tTitle" placeholder="e.g., Booth's Multiplication Algorithm" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Deadline</label>
+                                    <input type="date" id="tDeadline" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Est. Hours</label>
+                                    <input type="number" id="tHours" step="0.5" value="2.0" min="0.5" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Cognitive Load (1-5)</label>
+                                    <select id="tDiff">
+                                        <option value="1">1 - Very Easy</option>
+                                        <option value="2">2 - Easy</option>
+                                        <option value="3" selected>3 - Moderate</option>
+                                        <option value="4">4 - Hard</option>
+                                        <option value="5">5 - Exam Critical</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Exam Weightage</label>
+                                    <select id="tWeight">
+                                        <option value="1">Low Weight</option>
+                                        <option value="2" selected>Medium Weight</option>
+                                        <option value="3">High / Core Unit</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary full-width">⚡ Schedule Offline</button>
+                        </form>
+                    </div>
+
+                    <div class="glass-card">
+                        <div class="card-head">
+                            <div>
+                                <h3>🗓️ Offline AI Timetable</h3>
+                                <p class="text-muted">Auto-sorted by Urgency, Cognitive Load & Current Energy</p>
+                            </div>
+                            <div class="filter-pills">
+                                <button class="pill-btn active" onclick="UI.filterTasks('all', event)">All</button>
+                                <button class="pill-btn" onclick="UI.filterTasks('pending', event)">Pending</button>
+                                <button class="pill-btn" onclick="UI.filterTasks('done', event)">Completed</button>
+                            </div>
+                        </div>
+                        <div class="table-wrap">
+                            <table class="modern-table">
+                                <thead>
+                                    <tr>
+                                        <th>Done</th>
+                                        <th>Study Module</th>
+                                        <th>Deadline</th>
+                                        <th>Hrs</th>
+                                        <th>AI Score</th>
+                                        <th>Del</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="fullScheduleBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 4: SM-2 SPACED REPETITION FLASHCARDS (OFFLINE) -->
+            <section id="view-flashcards" class="view-section">
+                <div class="grid-1-2">
+                    <div class="glass-card">
+                        <h3>🃏 Create Revision Flashcard</h3>
+                        <p class="text-muted" style="margin-bottom:1rem;">Uses <strong>SuperMemo SM-2 Algorithm</strong> to calculate next revision interval offline.</p>
+                        <form id="addCardForm">
+                            <div class="form-group">
+                                <label>Topic / Question (Front)</label>
+                                <input type="text" id="fcFront" placeholder="e.g., What is Cache Coherence Problem?" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Key Answer / Formula (Back)</label>
+                                <textarea id="fcBack" rows="4" placeholder="e.g., Multiple local caches storing copies of a common memory block..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary full-width">➕ Add to SM-2 Deck</button>
+                        </form>
+                    </div>
+
+                    <div class="glass-card">
+                        <div class="card-head">
+                            <h3>🧠 Active Recall Deck (SM-2 Spaced Repetition)</h3>
+                            <span class="pill-tag" id="fcCountBadge">0 Cards in Deck</span>
+                        </div>
+                        <div id="flashcardStage" class="fc-stage"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 5: OFFLINE NOTES & AUTO QUIZ GENERATOR -->
+            <section id="view-notes" class="view-section">
+                <div class="grid-2-col">
+                    <div class="glass-card">
+                        <h3>📝 Offline Markdown Study Notes</h3>
+                        <p class="text-muted" style="margin-bottom:0.8rem;">Apne study notes yahan likhein. AI bina internet ke isme se important terms nikaal kar **Self-Test Quiz** bana dega!</p>
+                        <div class="form-group">
+                            <input type="text" id="noteTitle" placeholder="Note Title: e.g., Unit 3 Instruction Pipelining" value="COA: Instruction Pipelining & Hazards">
+                        </div>
+                        <div class="form-group">
+                            <textarea id="noteContent" rows="8">Instruction pipelining is a technique used in advanced microprocessors where the microprocessor begins executing a second instruction before the first has been completed.
+Structural hazard occurs when two instructions require the same hardware resource at the same time.
+Data hazard occurs when an instruction depends on the result of a previous instruction still in the pipeline.
+Control hazard occurs due to branch instructions changing the Program Counter.
+Cache memory is an extremely fast memory type that acts as a buffer between RAM and the CPU.</textarea>
+                        </div>
+                        <div class="form-row">
+                            <button class="btn btn-emerald" onclick="NotesEngine.saveNote()">💾 Save Note Offline</button>
+                            <button class="btn btn-glow" onclick="NotesEngine.generateQuizFromNote()">⚡ Generate Offline Quiz</button>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <h3>🎯 Offline AI Self-Test Quiz (Fill-in-the-Blank)</h3>
+                        <p class="text-muted" style="margin-bottom:1rem;">Generated locally from your notes using keyword extraction heuristics:</p>
+                        <div id="quizContainer" class="priority-stack"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 6: HABIT LOOP ENGINE -->
+            <section id="view-habits" class="view-section">
+                <div class="grid-1-2">
+                    <div class="glass-card">
+                        <h3>🔄 Design a Habit Loop</h3>
+                        <p class="text-muted" style="margin-bottom:1rem;">Charles Duhigg's Behavioral Model: <strong>Cue ➔ Routine ➔ Reward</strong></p>
+                        <form id="addHabitForm">
+                            <div class="form-group">
+                                <label>Habit Name</label>
+                                <input type="text" id="hName" placeholder="e.g., Daily 2 DSA Problems" required>
+                            </div>
+                            <div class="form-group">
+                                <label>1. Cue (Trigger)</label>
+                                <input type="text" id="hCue" placeholder="e.g., 7:30 AM after morning tea" required>
+                            </div>
+                            <div class="form-group">
+                                <label>2. Routine (Action)</label>
+                                <input type="text" id="hRoutine" placeholder="e.g., 45 mins coding without phone" required>
+                            </div>
+                            <div class="form-group">
+                                <label>3. Reward (Dopamine Hit)</label>
+                                <input type="text" id="hReward" placeholder="e.g., +50 XP & favorite song" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary full-width">🚀 Activate Habit Loop</button>
+                        </form>
+                    </div>
+
+                    <div class="glass-card">
+                        <h3>🏆 Active Habit Loops & 7-Day Consistency Grid</h3>
+                        <div id="habitCardsContainer" class="habit-cards-stack"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 7: DEEP FOCUS STUDIO -->
+            <section id="view-pomodoro" class="view-section">
+                <div class="pomodoro-studio glass-card">
+                    <div class="pomo-modes">
+                        <button class="pomo-mode-btn active" onclick="FocusStudio.setMode(25, 'Deep Cognitive Focus', event)">🧠 Deep Focus (25m)</button>
+                        <button class="pomo-mode-btn" onclick="FocusStudio.setMode(50, 'Extended Marathon', event)">⚡ Marathon (50m)</button>
+                        <button class="pomo-mode-btn" onclick="FocusStudio.setMode(5, 'Neural Rest Break', event)">☕ Short Break (5m)</button>
+                    </div>
+
+                    <div class="pomo-ring-wrap">
+                        <div class="pomo-ring">
+                            <span id="pomoTimeDisplay">25:00</span>
+                            <span id="pomoSubLabel">Deep Cognitive Focus</span>
+                        </div>
+                    </div>
+
+                    <div class="pomo-task-link">
+                        <label>Active Study Module:</label>
+                        <select id="pomoActiveTask"></select>
+                    </div>
+
+                    <div class="pomo-controls">
+                        <button id="pomoStartBtn" class="btn btn-emerald btn-lg" onclick="FocusStudio.start()">▶ Start Timer</button>
+                        <button id="pomoPauseBtn" class="btn btn-amber btn-lg" onclick="FocusStudio.pause()" disabled>⏸ Pause</button>
+                        <button class="btn btn-outline btn-lg" onclick="FocusStudio.reset()">↺ Reset</button>
+                        <button id="whiteNoiseBtn" class="btn btn-outline btn-lg" onclick="FocusStudio.toggleBrownNoise()">🎧 Offline Focus Sound: OFF</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 8: OFFLINE AI STUDY BOT -->
+            <section id="view-tutor" class="view-section">
+                <div class="glass-card tutor-card">
+                    <div class="card-head">
+                        <div>
+                            <h3>🤖 Offline AI Study Strategist (100% Local Rule Engine)</h3>
+                            <p class="text-muted">Bina internet ke apne syllabus, revision strategy, ya time management ke baare me puchein:</p>
+                        </div>
+                        <span class="pill-tag">⚡ ZERO LATENCY OFFLINE BOT</span>
+                    </div>
+
+                    <div class="quick-prompts">
+                        <button class="preset-btn" onclick="OfflineTutor.ask('What should I study right now?')">🎯 What should I study now?</button>
+                        <button class="preset-btn" onclick="OfflineTutor.ask('How to finish my syllabus before exam?')">📅 Syllabus strategy?</button>
+                        <button class="preset-btn" onclick="OfflineTutor.ask('I feel low energy and distracted')">🔋 Low energy / Distracted?</button>
+                        <button class="preset-btn" onclick="OfflineTutor.ask('Explain SM-2 Spaced Repetition')">🧠 What is SM-2 Algorithm?</button>
+                    </div>
+
+                    <div id="chatHistory" class="chat-box"></div>
+
+                    <form id="chatForm" class="chat-input-row">
+                        <input type="text" id="chatInput" placeholder="Ask offline AI coach (e.g., Which topic has highest priority?)..." required>
+                        <button type="submit" class="btn btn-primary">Send ➔</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- VIEW 9: NEURAL ANALYTICS -->
+            <section id="view-analytics" class="view-section">
+                <div class="grid-2-col">
+                    <div class="glass-card">
+                        <h3>📊 7-Day Study Output</h3>
+                        <div class="chart-box">
+                            <canvas id="barChartCanvas" width="460" height="250"></canvas>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <h3>🎯 Cognitive Load Breakdown</h3>
+                        <div class="chart-box">
+                            <canvas id="donutChartCanvas" width="460" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card" style="margin-top:1.5rem;">
+                    <h3>🎓 Viva Presentation Ready: Why This Hybrid Architecture Wins</h3>
+                    <div class="viva-grid">
+                        <div class="viva-item">
+                            <h4>1. Online Ingestion Only</h4>
+                            <p>Internet is only used when uploading/parsing new syllabus PDFs. Once imported, Service Workers & LocalStorage run 100% offline.</p>
+                        </div>
+                        <div class="viva-item">
+                            <h4>2. Energy-Adaptive Heuristic</h4>
+                            <p>Matches high-difficulty topics (Level 4-5) when user energy is High, and switches to light flashcards when energy is Low.</p>
+                        </div>
+                        <div class="viva-item">
+                            <h4>3. SM-2 Spaced Repetition</h4>
+                            <p>Calculates memory decay intervals ($I_1=1d, I_2=6d, I_n = I_{n-1} 	imes EF$) to prevent forgetting before university exams.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="toastBox" class="toast-notification"></div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/scheduler.js"></script>
+    <script src="js/syllabus.js?v=8"></script>
+    <script src="js/flashcards.js"></script>
+    <script src="js/tutor.js"></script>
+    <script src="js/focus.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Automatically clear any old Service Worker cache so new changes always show up immediately
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for (let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+        }
+        if ('caches' in window) {
+            caches.keys().then(function(names) {
+                for (let name of names) caches.delete(name);
+            });
+        }
+    </script>
+</body>
+</html>
